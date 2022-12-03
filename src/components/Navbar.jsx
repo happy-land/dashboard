@@ -29,7 +29,33 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 const Navbar = () => {
-  const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick } = useStateContext();
+  const {
+    activeMenu,
+    setActiveMenu,
+    isClicked,
+    setIsClicked,
+    handleClick,
+    screenSize,
+    setScreenSize,
+  } = useStateContext();
+
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth);
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (screenSize <= 900) {
+      setActiveMenu(false);
+    } else {
+      setActiveMenu(true);
+    }
+  }, [screenSize]);
+  
 
   return (
     <div className='flex justify-between p-2 md:mx-6 relative'>
@@ -60,20 +86,15 @@ const Navbar = () => {
           color='blue'
           icon={<RiNotification3Line />}
         />
-        <TooltipComponent
-          content='Profile'
-          position='BottomCenter'
-        >
-          <div className='flex items-center gap-2
+        <TooltipComponent content='Profile' position='BottomCenter'>
+          <div
+            className='flex items-center gap-2
           cursor-pointer p-1 hover:bg-light-gray rounded-lg'
-          onClick={() => handleClick('userProfile')}
+            onClick={() => handleClick('userProfile')}
           >
-            <img 
-              className='rounded-full w-8 h-8'
-              src={avatar}
-            />
+            <img className='rounded-full w-8 h-8' src={avatar} />
             <p>
-              <span className='text-gray-400 text-14'>Hi, </span> {' '}
+              <span className='text-gray-400 text-14'>Hi, </span>{' '}
               <span className='text-gray-400 font-bold ml-1 text-14'>Michael</span>
             </p>
             <MdKeyboardArrowDown className='text-gray-400 text-14' />
